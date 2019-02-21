@@ -91,10 +91,10 @@ for i=2:length(inc_strain)
 
         else
           
-            [stress{i}, strain_pl{i}, alpha{i}]=plastic_loading(E, ha, Cr, stress{i-1}, inc_strain{i}, strain_pl{i-1}, alpha{i-1});
+            [stress{i}, strain_pl{i}, alpha{i}, debug_para]=plastic_loading(E, ha, Cr, stress{i-1}, inc_strain{i}, strain_pl{i-1}, alpha{i-1});
             strain{i}=strain{i-1}+inc_strain{i};
             yield_tag=1; 
-            
+            total_debug_para(i,:)=debug_para;
         end 
     end
     i
@@ -127,7 +127,7 @@ xlabel('Plastic Shear Strain (\epsilon^{p}_{12})');
 ylabel('Back Stress (\sigma_{12})')
 
 %%
-function [stress, strain_pl, alpha]=plastic_loading(E, ha, Cr, stress, inc_strain, strain_pl, alpha)
+function [stress, strain_pl, alpha, debug_para]=plastic_loading(E, ha, Cr, stress, inc_strain, strain_pl, alpha)
 
     % forward Euler method to do integration
     subincrement=100;
@@ -146,6 +146,7 @@ function [stress, strain_pl, alpha]=plastic_loading(E, ha, Cr, stress, inc_strai
         strain_pl=strain_pl+d_inc_strain_pl;
         alpha=alpha + (2/3*ha*df_dsigma - Cr*alpha*sqrt(2/3))*d_lambda;
     end
+    debug_para=d_lambda;
 
 
 end
